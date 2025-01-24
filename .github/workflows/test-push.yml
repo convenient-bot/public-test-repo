@@ -1,0 +1,44 @@
+name: test-push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-push:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Prepare git
+        shell: bash
+        run: |
+          git config --global user.name "github-action[bot]"
+          git config --global user.email "github-action[bot]@users.noreply.github.com"
+
+      - name: Check out the src branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Generate changes
+        shell: bash
+        run: |
+          set -v
+
+          git config --global pull.rebase false
+          git fetch --unshallow || true
+
+          echo "abc123" > somefile.txt
+
+          git status
+
+          if ! git diff-index --quiet HEAD; then
+            echo "Adding changes to git"
+            git commit -am "add file ($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+            git push
+          else
+            echo "exiting"
+            exit 0;
+          fi
