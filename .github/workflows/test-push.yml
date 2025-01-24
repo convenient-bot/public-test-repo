@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - convenient-bot-patch-1
 
 jobs:
   test-push:
@@ -30,7 +31,7 @@ jobs:
           git config --global pull.rebase false
           git fetch --unshallow || true
 
-          echo "abc123" > somefile.txt
+          echo "asdfasdfasdf" > somefile.txt
           git add somefile.txt
 
           git status
